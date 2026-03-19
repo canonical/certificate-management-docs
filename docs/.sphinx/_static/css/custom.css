@@ -1,0 +1,33 @@
+/* 1. Center the container */
+div.mermaid,
+pre.mermaid {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important; /* Let it take the full column width */
+    margin: 2rem auto !important;
+}
+
+/* 2. Mermaid diagram sizing */
+pre.mermaid svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Note: Control diagram size per-diagram via nodeSpacing/rankSpacing in %%{init:}%% */
+
+/* 3. Global font family for all Mermaid diagrams */
+pre.mermaid text,
+pre.mermaid .nodeLabel,
+pre.mermaid .edgeLabel {
+    font-family: Ubuntu, sans-serif !important;
+}
+
+/* 4. Force darker edges and arrows */
+pre.mermaid .edge-pattern-solid,
+pre.mermaid .edge-thickness-normal,
+pre.mermaid path.path,
+pre.mermaid line,
+pre.mermaid polyline {
+    stroke: #333 !important;
+    stroke-width: 2px !important;
+}

@@ -309,8 +309,9 @@ extensions = [
     "sphinx_ubuntu_images",
     "sphinx_youtube_links",
     "sphinxcontrib.cairosvgconverter",
-    "sphinx_last_updated_by_git",
+    "sphinxcontrib.mermaid",
     "sphinx.ext.intersphinx",
+    "sphinx_last_updated_by_git",
     "sphinx_sitemap",
     "sphinxext.rediraffe",
     "sphinx_new_tab_link",
@@ -325,21 +326,9 @@ exclude_patterns = [
 # Adds custom CSS files, located under 'html_static_path'
 
 html_css_files = [
+    "css/custom.css",
     "css/pdf.css",
 ]
-
-
-# Adds custom JavaScript files, located under 'html_static_path'
-
-html_js_files = []
-
-
-# Specifies a reST snippet to be appended to each .rst file
-
-rst_epilog = """
-.. include:: /reuse/links.txt
-.. include:: /reuse/substitutions.txt
-"""
 
 # Feedback button at the top; enabled by default
 #
@@ -393,6 +382,23 @@ intersphinx_mapping = {
     'sphinxcontrib-mermaid': ('https://sphinxcontrib-mermaid-demo.readthedocs.io/en/latest', None)
 }
 
+# Mermaid configuration
+mermaid_output_format = 'raw'
+
+# Standard Mermaid diagram settings for this project.
+# Copy this init block into new diagrams and adjust spacing as needed:
+#
+# %%{init: {
+#   'theme': 'default',
+#   'themeVariables': {'fontSize': '11px'},
+#   'flowchart': {'nodeSpacing': 25, 'rankSpacing': 15, 'curve': 'linear'}
+# }}%%
+#
+# Adjust spacing for different diagram sizes: smaller values = more compact.
+# Curve options: 'linear' (straight, clearest), 'basis' (curved), 'step'
+# Note: Global Mermaid styling (fontFamily, edge colors) is in .sphinx/_static/css/custom.css
+
 new_tab_link_show_external_link_icon = True
 
 rediraffe_redirects = "redirects.txt"
+
