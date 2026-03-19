@@ -24,7 +24,7 @@ import yaml
 #
 # TODO: Update with the official name of your project or product
 
-project = "Documentation starter pack"
+project = "Canonical Certificate Management"
 author = "Canonical Ltd."
 
 
@@ -70,7 +70,7 @@ copyright = "%s CC-BY-SA, %s" % (datetime.date.today().year, author)
 # NOTE: The Open Graph Protocol (OGP) enhances page display in a social graph
 #       and is used by social media platforms; see https://ogp.me/
 
-ogp_site_url = "https://canonical-starter-pack.readthedocs-hosted.com/"
+# ogp_site_url = "https://canonical-starter-pack.readthedocs-hosted.com/"
 
 
 # Preview name of the documentation website
@@ -84,7 +84,7 @@ ogp_site_name = project
 #
 # TODO: To customise the preview image, update as needed.
 
-ogp_image = "https://assets.ubuntu.com/v1/cc828679-docs_illustration.svg"
+# ogp_image = "https://assets.ubuntu.com/v1/cc828679-docs_illustration.svg"
 
 
 # Product favicon; shown in bookmarks, browser tabs, etc.
@@ -121,18 +121,18 @@ html_context = {
     # Your Mattermost channel URL
     #
     # TODO: Change to your Mattermost channel URL or leave empty.
-    "mattermost": "https://chat.canonical.com/canonical/channels/documentation",
+    "mattermost": "",
     # Your Matrix channel URL
     #
     # TODO: Change to your Matrix channel URL or leave empty.
-    "matrix": "https://matrix.to/#/#documentation:ubuntu.com",
+    "matrix": "https://matrix.to/#/#tls:ubuntu.com",
     # Your documentation GitHub repository URL
     #
     # TODO: Change to your documentation GitHub repository URL or leave empty.
     #
     # NOTE: If set, links for viewing the documentation source files
     #       and creating GitHub issues are added at the bottom of each page.
-    "github_url": "https://github.com/canonical/sphinx-docs-starter-pack",
+    "github_url": "https://github.com/canonical/certificate-management-docs",
     # Docs branch in the repo; used in links for viewing the source files
     #
     # TODO: To customise the branch, uncomment and update as needed.
@@ -145,20 +145,20 @@ html_context = {
     "repo_folder": "/docs/",
     # TODO: To enable or disable the Previous / Next buttons at the bottom of pages
     # Valid options: none, prev, next, both
-    # "sequential_nav": "both",
+    "sequential_nav": "both",
     # TODO: To enable listing contributors on individual pages, set to True
     "display_contributors": False,
 
-    # Required for feedback button    
+    # Required for feedback button
     'github_issues': 'enabled',
 }
 
 html_extra_path = []
 
 # Allow opt-in build of the OpenAPI "Hello" example so docs stay clean by default.
-if os.getenv("OPENAPI", ""):
-    tags.add("openapi")
-    html_extra_path.append("how-to/assets/openapi.yaml")
+# if os.getenv("OPENAPI", ""):
+#     tags.add("openapi")
+#     html_extra_path.append("how-to/assets/openapi.yaml")
 
 # TODO: To enable the edit button on pages, uncomment and change the link to a
 # public repository on GitHub or Launchpad. Any of the following link domains
@@ -168,7 +168,7 @@ if os.getenv("OPENAPI", ""):
 # - https://git.launchpad.net/example
 #
 # html_theme_options = {
-# 'source_edit_link': 'https://github.com/canonical/sphinx-docs-starter-pack',
+# 'source_edit_link': 'https://github.com/canonical/certificate-management-docs',
 # }
 
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
@@ -176,19 +176,26 @@ if os.getenv("OPENAPI", ""):
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-# slug = ''
+slug = 'certificate-management'
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
 #######################
 
 # Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
+# TODO: When moving to docs.ubuntu.com, set to:
+#       html_baseurl = 'https://documentation.ubuntu.com/certificate-management/'
 
 html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
 
-# sphinx-sitemap uses html_baseurl to generate the full URL for each page:
+# URL scheme. Add version scheme element.
+# When configured with RTD variables, check for RTD environment so manual runs succeed:
 
-sitemap_url_scheme = '{link}'
+if 'READTHEDOCS_VERSION' in os.environ:
+    version = os.environ["READTHEDOCS_VERSION"]
+    sitemap_url_scheme = '{version}{link}'
+else:
+    sitemap_url_scheme = 'MANUAL/{link}'
 
 # Include `lastmod` dates in the sitemap:
 
@@ -209,8 +216,8 @@ sitemap_excludes = [
 # Template and asset locations
 #######################
 
-#html_static_path = ["_static"]
-#templates_path = ["_templates"]
+html_static_path = [".sphinx/_static"]
+templates_path = [".sphinx/_templates"]
 
 
 #############
@@ -226,13 +233,7 @@ sitemap_excludes = [
 # NOTE: If undefined, set to None, or empty,
 #       the sphinx_reredirects extension will be disabled.
 
-redirects = {
-    'reference/doc-cheat-sheet-myst/': '../myst-syntax-reference',
-    'reference/doc-cheat-sheet/': '../rst-syntax-reference',
-    'reference/style-guide-myst/': '../myst-syntax-reference',
-    'reference/style-guide/': '../rst-syntax-reference',
-    'how-to/migrate-from-pre-extension': '../update-starter-packs/pre-extension/'
-}
+# redirects = {}  # Now using redirects.txt file instead
 
 
 ###########################
@@ -271,13 +272,24 @@ linkcheck_retries = 3
 # NOTE: By default, the following MyST extensions are enabled:
 #       substitution, deflist, linkify
 
-# myst_enable_extensions = set()
+myst_enable_extensions = set(["colon_fence",])
 
 
 # Custom Sphinx extensions; see
 # https://www.sphinx-doc.org/en/master/usage/extensions/index.html
 
 # NOTE: The canonical_sphinx extension is required for the starter pack.
+
+# Customize sphinx_llm.txt
+## Add project summary:
+llms_txt_description = (
+    "Canonical Certificate Management provides tools and workflows for managing "
+    "TLS certificates in enterprise environments."
+)
+## Disable concatenated file generation (because file counterproductively large):
+llms_txt_full_build = False
+## Get cleaner markdown URLs (e.g., `page.md` instead of `page/index.html.md`):
+llms_txt_suffix_mode = "url-suffix"
 
 extensions = [
     "canonical_sphinx",
@@ -290,6 +302,7 @@ extensions = [
     "sphinx_config_options",
     "sphinx_contributor_listing",
     "sphinx_filtered_toctree",
+    "sphinx_llm.txt",
     "sphinx_related_links",
     "sphinx_roles",
     "sphinx_terminal",
@@ -299,6 +312,8 @@ extensions = [
     "sphinx_last_updated_by_git",
     "sphinx.ext.intersphinx",
     "sphinx_sitemap",
+    "sphinxext.rediraffe",
+    "sphinx_new_tab_link",
 ]
 
 # Excludes files or directories from processing
@@ -309,12 +324,14 @@ exclude_patterns = [
 
 # Adds custom CSS files, located under 'html_static_path'
 
-# html_css_files = []
+html_css_files = [
+    "css/pdf.css",
+]
 
 
 # Adds custom JavaScript files, located under 'html_static_path'
 
-# html_js_files = []
+html_js_files = []
 
 
 # Specifies a reST snippet to be appended to each .rst file
@@ -375,3 +392,7 @@ if os.path.exists('./reuse/substitutions.yaml'):
 intersphinx_mapping = {
     'sphinxcontrib-mermaid': ('https://sphinxcontrib-mermaid-demo.readthedocs.io/en/latest', None)
 }
+
+new_tab_link_show_external_link_icon = True
+
+rediraffe_redirects = "redirects.txt"
