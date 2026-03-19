@@ -1,2 +1,53 @@
 # <old URL> <new URL>
-# Add project-specific redirects here as needed
+
+# NOTE: This repo was set up as a copy of the starter pack. Removing the starter pack
+# docs without redirects causes check-removed-urls.yml to fail. These temporary redirects
+# satisfy that check and can be safely removed in future PRs.
+
+# Starter pack template redirects (temporary)
+./explanation/ ./
+./explanation/build/ ./
+./how-to/ ./
+./how-to/bridge-project-and-doc-builds/ ./
+./how-to/build/ ./
+./how-to/contributing-myst/ ./
+./how-to/contributing/ ./
+./how-to/create-data-tables/ ./
+./how-to/custom-templates/ ./
+./how-to/customise-pdf/ ./
+./how-to/customise/ ./
+./how-to/diagrams-as-code-mermaid/ ./
+./how-to/edit/ ./
+./how-to/guidance/ ./
+./how-to/import-docstrings-with-autodoc/ ./
+./how-to/migrate-from-pre-extension/ ./
+./how-to/openapi/ ./
+./how-to/prereqs/ ./
+./how-to/rtd/ ./
+./how-to/set-up-sitemaps/ ./
+./how-to/troubleshoot-issues/ ./
+./how-to/update-starter-packs/ ./
+./how-to/update-starter-packs/legacy-starter-pack/ ./
+./how-to/update-starter-packs/new-starter-pack/ ./
+./how-to/update/ ./
+./reference/ ./
+./reference/automatic_checks/ ./
+./reference/automatic_checks_accessibility/ ./
+./reference/automatic_checks_inclusivelanguage/ ./
+./reference/automatic_checks_links/ ./
+./reference/automatic_checks_linting/ ./
+./reference/automatic_checks_spelling/ ./
+./reference/automatic_checks_styleguide/ ./
+./reference/doc-cheat-sheet-myst/ ./
+./reference/doc-cheat-sheet/ ./
+./reference/myst-syntax-reference/ ./
+./reference/removed-url-check/ ./
+./reference/rst-syntax-reference/ ./
+./reference/style-guide-myst/ ./
+./reference/style-guide/ ./
+./release-notes/ ./
+./release-notes/1.4/ ./
+./release-notes/1.5/ ./
+./tutorial/ ./
+./tutorial/set-up-automated-testing/ ./
+./tutorial/set-up/ ./
