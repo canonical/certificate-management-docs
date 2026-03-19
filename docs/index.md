@@ -11,18 +11,18 @@ myst:
 Canonical Certificate Management is a collection of charms for TLS certificate management in Juju deployments. Choose the right charm(s) for your needs:
 
 ```{mermaid}
-%%{init: {'theme': 'default', 'themeVariables': {'fontSize': '11px'}, 'flowchart': {'nodeSpacing': 25, 'rankSpacing': 15, 'curve': 'linear'}}}%%
+%%{init: {'theme': 'default', 'themeVariables': {'fontSize': '11px'}, 'flowchart': {'nodeSpacing': 25, 'rankSpacing': 25, 'curve': 'linear', 'padding': 10}}}%%
 flowchart TD
     A{Do you have existing<br/>PKI infrastructure?}
     B{Does it expose an<br/>ACME interface?}
     C{Do you need a<br/>full-featured solution?}
 
-    D["🔗 Lego charm"]
-    E["🔗 Manual TLS<br/>certificates charm"]
+    D["🔗 Lego"]
+    E["🔗 Manual TLS certificates"]
     F{Do you need<br/>HSM support?}
-    G["🔗 Self-signed<br/>certificates charm"]
-    H["Notary charm<br/>(coming soon)"]
-    I["🔗 Vault charm"]
+    G["🔗 Self-signed certificates"]
+    H["Notary (coming soon)"]
+    I["🔗 Vault"]
 
     A -->|Yes| B
     A -->|No| C
