@@ -24,7 +24,7 @@ import yaml
 #
 # TODO: Update with the official name of your project or product
 
-project = "Canonical Certificate Management"
+project = "Certificate Management"
 author = "Canonical Ltd."
 
 
