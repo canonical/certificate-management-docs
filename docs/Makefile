@@ -57,7 +57,7 @@ full-help: $(DOCS_VENVDIR)
 $(DOCS_VENVDIR):
 	@echo "... setting up virtualenv"
 	python3 -m venv $(DOCS_VENVDIR) || { echo "You must install python3-venv before you can build the documentation."; exit 1; }
-	. $(DOCS_VENV); pip install $(PIPOPTS) --require-virtualenv \
+	. $(DOCS_VENV); pip install --require-virtualenv \
 	    --upgrade -r requirements.txt \
             --log $(DOCS_VENVDIR)/pip_install.log
 	@test ! -f $(DOCS_VENVDIR)/pip_list.txt || \
