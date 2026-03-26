@@ -6,7 +6,7 @@ myst:
 
 (home)=
 
-# Canonical Certificate Management documentation
+# Certificate Management documentation
 
 Canonical Certificate Management is a collection of charms for TLS certificate management in Juju deployments. Choose the right charm(s) for your needs:
 
