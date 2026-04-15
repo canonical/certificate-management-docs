@@ -8,45 +8,30 @@ myst:
 
 # Certificate Management documentation
 
-Canonical Certificate Management is a collection of charms for TLS certificate management in Juju deployments. Choose the right charm(s) for your needs:
+Canonical Certificate Management is a collection of charms for TLS certificate management in Juju deployments. This documentation covers everything from understanding TLS requirements and choosing the right provider to implementing certificate support in your own charms.
 
-```{mermaid}
-%%{init: {'theme': 'default', 'themeVariables': {'fontSize': '11px'}, 'flowchart': {'nodeSpacing': 25, 'rankSpacing': 25, 'curve': 'linear', 'padding': 10}}}%%
-flowchart TD
-    A{Do you have existing<br/>PKI infrastructure?}
-    B{Does it expose an<br/>ACME interface?}
-    C{Do you need a<br/>full-featured solution?}
+## For Charm Operators
 
-    D["🔗 Lego"]
-    E["🔗 Manual TLS certificates"]
-    F{Do you need<br/>HSM support?}
-    G["🔗 Self-signed certificates"]
-    H["Notary (coming soon)"]
-    I["🔗 Vault"]
+Guides for deploying and configuring TLS certificates in your Juju environments.
 
-    A -->|Yes| B
-    A -->|No| C
+```{toctree}
+:maxdepth: 2
 
-    B -->|Yes| D
-    B -->|No| E
-
-    C -->|Yes| F
-    C -->|No| G
-
-    F -->|Yes| H
-    F -->|No| I
-
-    classDef charmLink fill:#FFF5F0,stroke:#E95420,stroke-width:2px,color:#333
-    classDef plainNode fill:#fff,stroke:#333,stroke-width:2px,color:#333
-
-    class D,E,G,I charmLink
-    class A,B,C,F,H plainNode
-
-    click D "https://charmhub.io/lego" "View Lego charm documentation"
-    click E "https://charmhub.io/manual-tls-certificates" "View Manual TLS charm documentation"
-    click G "https://charmhub.io/self-signed-certificates" "View Self-signed certificates charm documentation"
-    click I "https://charmhub.io/vault" "View Vault charm documentation"
+operator/understanding-tls
+operator/deployment-blueprints/index
 ```
+
+## For Charm Developers
+
+Resources for implementing TLS certificate support in your charms.
+
+```{toctree}
+:maxdepth: 2
+
+developer/tls-certificates-interface
+```
+
+---
 
 (project-and-community)=
 
@@ -54,11 +39,11 @@ flowchart TD
 
 Canonical Certificate Management is an open source project that warmly welcomes community projects, contributions, suggestions, fixes and constructive feedback.
 
-* [Code of Conduct ](https://ubuntu.com/community/code-of-conduct)
-* [Join our chat](https://matrix.to/#/#tls:ubuntu.com)
-* [Join our forum ](https://discourse.charmhub.io/)
-* [Report a bug](https://github.com/canonical/certificate-management-docs/issues)
-* [Contribute](https://github.com/canonical/certificate-management-docs/issues)
-* [Visit our careers page](https://canonical.com/careers)
+- [Code of Conduct](https://ubuntu.com/community/code-of-conduct)
+- [Join our chat](https://matrix.to/#/#tls:ubuntu.com)
+- [Join our forum](https://discourse.charmhub.io/)
+- [Report a bug](https://github.com/canonical/certificate-management-docs/issues)
+- [Contribute](https://github.com/canonical/certificate-management-docs/issues)
+- [Visit our careers page](https://canonical.com/careers)
 
 Thinking about using Juju for your next project? [Get in touch](https://canonical.com/contact-us)!
