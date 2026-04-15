@@ -8,27 +8,31 @@ myst:
 
 # Certificate Management documentation
 
-Canonical Certificate Management is a collection of charms for TLS certificate management in Juju deployments. This documentation covers everything from understanding TLS requirements and choosing the right provider to implementing certificate support in your own charms.
+Welcome! This documentation helps you manage TLS certificates in Juju deployments, whether you are a charm operator or a charm developer.
 
-## For Charm Operators
-
-Guides for deploying and configuring TLS certificates in your Juju environments.
+---
 
 ```{toctree}
+:caption: For Charm Developers
 :maxdepth: 2
 
-operator/understanding-tls
-operator/deployment-blueprints/index
+developer/tutorials/index
+developer/how-to-guides/index
+developer/reference/index
+developer/explanation/index
+developer/tls-certificates-interface
 ```
 
-## For Charm Developers
-
-Resources for implementing TLS certificate support in your charms.
-
 ```{toctree}
+:caption: For Charm Operators
 :maxdepth: 2
 
-developer/tls-certificates-interface
+operator/tutorials/index
+operator/how-to-guides/index
+operator/reference/index
+operator/explanation/index
+operator/understanding-tls
+operator/deployment-blueprints/index
 ```
 
 ---
