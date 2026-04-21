@@ -124,11 +124,15 @@ The [self-signed-certificates](https://charmhub.io/self-signed-certificates) ope
 
 Upon deployment, the self-signed-certificates operator generates a private key and a CA certificate (not signed by any external authority). It signs each certificate request it receives using this self-signed CA certificate. Because the CA is self-signed, clients and applications must explicitly trust it — see {ref}`ca-trust-best-practices` for details.
 
+This charm implements the `tls-certificates` interface using the [tls_certificates library](https://documentation.ubuntu.com/charmlibs/reference/charmlibs/interfaces/tls-certificates), which provides automatic certificate renewal before expiry. Additionally supports CA private key rotation via the `rotate-private-key` action, which automatically revokes and regenerates all certificates for integrated applications.
+
 ### Lego (Let's Encrypt or another ACME server)
 
 The [Lego](https://charmhub.io/lego) charm operator requests certificates using the ACME protocol from providers like Let's Encrypt. The ACME server validates domain ownership using the [DNS-01](https://letsencrypt.org/docs/challenge-types/) challenge.
 
 This is a good option when you need publicly trusted certificates and your DNS provider is supported. If your DNS provider is not currently supported, reach out to the team.
+
+This charm implements the `tls-certificates` interface using the [tls_certificates library](https://documentation.ubuntu.com/charmlibs/reference/charmlibs/interfaces/tls-certificates), which provides automatic certificate renewal before expiry and structured error reporting with standardized codes when certificate requests fail.
 
 ### Manual TLS certificates
 
@@ -145,3 +149,5 @@ For a more streamlined experience, consider [Notary](https://canonical-notary.re
 [Vault](https://charmhub.io/vault-k8s) is a popular secret management platform. Both the Kubernetes and machine versions of the Vault charm can be used as an intermediate Certificate Authority to provide certificates in the Juju ecosystem.
 
 Vault is well-suited for production deployments that require a full-featured PKI solution with secret management capabilities. See the [Vault charm documentation](https://canonical-vault-charms.readthedocs-hosted.com/en/latest/) for details.
+
+This charm implements the `tls-certificates` interface using the [tls_certificates library](https://documentation.ubuntu.com/charmlibs/reference/charmlibs/interfaces/tls-certificates), which provides automatic certificate renewal before expiry and structured error reporting with standardized codes when certificate requests fail.
