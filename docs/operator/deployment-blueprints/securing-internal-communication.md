@@ -11,7 +11,7 @@ Integrate each application with `self-signed-certificates` over the `tls-certifi
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart TD
-    SSC["Self-signed\ncertificates"]
+    SSC["Self-signed<br/>certificates"]
 
     subgraph Application
         U1["Unit 0"]
@@ -19,7 +19,7 @@ flowchart TD
         U3["Unit 2"]
     end
 
-    SSC -.->|"certificates\nintegration\n(UNIT mode)"| Application
+    SSC -.->|"certificates<br/>integration<br/>(UNIT mode)"| Application
     U1 <-->|"HTTPS"| U2
     U1 <-->|"HTTPS"| U3
     U2 <-->|"HTTPS"| U3
@@ -60,9 +60,9 @@ In a realistic production deployment, multiple applications may need both intern
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '11px'}, 'flowchart': {'nodeSpacing': 25, 'rankSpacing': 35, 'curve': 'linear', 'padding': 8}}}%%
 flowchart TD
     Client["👤 Client"]
-    Traefik["Traefik\n(Ingress)"]
-    APIProvider["TLS Provider\n(API certs)"]
-    InternalProvider["Self-signed\ncertificates\n(Internal certs)"]
+    Traefik["Traefik<br/>(Ingress)"]
+    APIProvider["TLS Provider<br/>(API certs)"]
+    InternalProvider["Self-signed<br/>certificates<br/>(Internal certs)"]
 
     subgraph AppModel["Application Model"]
         subgraph AppA["Application A"]
@@ -81,9 +81,10 @@ flowchart TD
     A1 <-->|"HTTPS"| A2
     B1 <-->|"HTTPS"| B2
 
-    APIProvider -.->|"certificates\nintegration\n(APP mode)"| Traefik
-    InternalProvider -.->|"certificates\nintegration\n(UNIT mode)"| AppA
-    InternalProvider -.->|"certificates\nintegration\n(UNIT mode)"| AppB
+    APIProvider -.->|"certificates<br/>integration<br/>(APP mode)"| Traefik
+    InternalProvider -.->|"certificate-transfer<br/>integration"| Traefik
+    InternalProvider -.->|"certificates<br/>integration<br/>(UNIT mode)"| AppA
+    InternalProvider -.->|"certificates<br/>integration<br/>(UNIT mode)"| AppB
 
     classDef client fill:#f5f5f5,stroke:#333,stroke-width:2px,color:#333
     classDef ingress fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
@@ -104,4 +105,7 @@ In this deployment:
 
 - An **API TLS provider** (e.g., Vault, Lego) provides certificates in APP mode for the ingress to secure client-facing traffic.
 - A **self-signed-certificates** provider issues certificates in UNIT mode for each application unit to secure internal communication.
+- The **ingress** trusts the self-signed CA via the `certificate-transfer` integration, enabling it to validate backend certificates.
 - **Application A** and **Application B** communicate over HTTPS, with each unit having its own certificate.
+
+See {ref}`ca-trust-best-practices` for more details on trust establishment patterns.

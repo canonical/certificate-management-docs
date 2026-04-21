@@ -28,9 +28,9 @@ The ingress will:
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart LR
-    C["👤 Client"] -->|"HTTPS"| T["Traefik\n(Ingress)"]
+    C["👤 Client"] -->|"HTTPS"| T["Traefik<br/>(Ingress)"]
     T -->|"HTTP"| A["Application"]
-    P["TLS Provider"] -.->|"certificates\nintegration\n(APP mode)"| T
+    P["TLS Provider"] -.->|"certificates<br/>integration<br/>(APP mode)"| T
 
     classDef client fill:#f5f5f5,stroke:#333,stroke-width:2px,color:#333
     classDef ingress fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
@@ -53,11 +53,11 @@ For internal traffic between the ingress and backend applications, you can add e
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart LR
-    C["👤 Client"] -->|"HTTPS"| T["Traefik\n(Ingress)"]
+    C["👤 Client"] -->|"HTTPS"| T["Traefik<br/>(Ingress)"]
     T -->|"HTTPS"| A["Application"]
-    APIP["TLS Provider\n(API certs)"] -.->|"certificates\nintegration\n(APP mode)"| T
-    INTP["Self-signed\ncertificates"] -.->|"certificates\nintegration\n(UNIT mode)"| A
-    INTP -.->|"certificates-transfer\nintegration"| T
+    APIP["TLS Provider<br/>(API certs)"] -.->|"certificates<br/>integration<br/>(APP mode)"| T
+    INTP["Self-signed<br/>certificates"] -.->|"certificates<br/>integration<br/>(UNIT mode)"| A
+    INTP -.->|"certificates-transfer<br/>integration"| T
 
     classDef client fill:#f5f5f5,stroke:#333,stroke-width:2px,color:#333
     classDef ingress fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
@@ -70,37 +70,4 @@ flowchart LR
     class APIP,INTP provider
 ```
 
-## 2. Trust establishment between clients and applications
-
-For TLS to work correctly:
-
-- Clients must **trust the CA** that issued the application's leaf certificate.
-- Applications must present a **valid chain** that leads to that trusted CA.
-
-### Public CAs
-
-When using a public CA through `lego` (e.g., Let's Encrypt), certificates are usually trusted by default by most clients and browsers.
-
-### Private or self-signed CAs
-
-When using `self-signed-certificates`, `vault`, `manual-tls-certificates`, or `notary`, clients (or client applications) must explicitly trust the CA.
-
-For Juju-integrated client applications, this is achieved by integrating with the provider over the `certificates-transfer` interface.
-
-```{mermaid}
-%%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
-flowchart TD
-    P["TLS Provider"] -.->|"certificates\nintegration"| Server["Server\nApplication"]
-    P -.->|"certificates-transfer\nintegration"| ClientApp["Client\nApplication"]
-    ClientApp -->|"HTTPS\n(trusts CA)"| Server
-
-    classDef provider fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#333
-    classDef app fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#333
-    classDef client fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
-
-    class P provider
-    class Server app
-    class ClientApp client
-```
-
-See {ref}`ca-trust-best-practices` for detailed guidance on CA trust patterns.
+See {ref}`ca-trust-best-practices` for detailed guidance on establishing trust between clients and applications.

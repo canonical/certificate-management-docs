@@ -12,6 +12,23 @@ In the Juju ecosystem, multiple TLS providers can be used to issue certificates 
 
 In many cases, the CA certificates used by these providers are self-signed or private. This means that the certificates they issue will **not** be trusted by default by other applications or clients unless the CA is explicitly trusted.
 
+## Trust establishment between clients and applications
+
+For TLS to work correctly:
+
+- Clients must **trust the CA** that issued the application's leaf certificate.
+- Applications must present a **valid chain** that leads to that trusted CA.
+
+### Public CAs
+
+When using a public CA through `lego` (e.g., Let's Encrypt), certificates are usually trusted by default by most clients and browsers.
+
+### Private or self-signed CAs
+
+When using `self-signed-certificates`, `vault`, `manual-tls-certificates`, or `notary`, clients (or client applications) must explicitly trust the CA.
+
+For Juju-integrated client applications, this is achieved by integrating with the provider over the `certificates-transfer` interface.
+
 ## Best practices for production deployments
 
 ### Internal communication (unit-to-unit)
@@ -25,16 +42,23 @@ As described in the {ref}`securing internal communication <securing-internal-com
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart TD
-    SSC["Self-signed\ncertificates\n(CA)"]
-    SSC -.->|"certificates integration\n(issues leaf cert + CA cert)"| U1["Unit 0"]
-    SSC -.->|"certificates integration\n(issues leaf cert + CA cert)"| U2["Unit 1"]
-    U1 <-->|"HTTPS\n(trusts CA)"| U2
+    SSC["Self-signed<br/>certificates<br/>(CA)"]
+
+    subgraph Application
+        U1["Unit 0"]
+        U2["Unit 1"]
+    end
+
+    SSC -.->|"certificates integration<br/>(issues leaf cert + CA cert)"| Application
+    U1 <-->|"HTTPS<br/>(trusts CA)"| U2
 
     classDef provider fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#333
     classDef unit fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#333
+    classDef appGroup fill:#F3E5F5,stroke:#6A1B9A,stroke-width:2px,color:#333
 
     class SSC provider
     class U1,U2 unit
+    class Application appGroup
 ```
 
 ### API communication
@@ -47,10 +71,10 @@ For more complex deployments that {ref}`secure API communication <securing-api-c
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart TD
-    P["TLS Provider\n(CA)"]
-    P -.->|"certificates\nintegration"| Server["Server App"]
-    P -.->|"certificates-transfer\nintegration\n(provides CA cert)"| ClientApp["Client App"]
-    ClientApp -->|"HTTPS\n(validates chain → CA)"| Server
+    P["TLS Provider<br/>(CA)"]
+    P -.->|"certificates<br/>integration"| Server["Server App"]
+    P -.->|"certificates-transfer<br/>integration<br/>(provides CA cert)"| ClientApp["Client App"]
+    ClientApp -->|"HTTPS<br/>(validates chain → CA)"| Server
 
     classDef provider fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#333
     classDef server fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#333

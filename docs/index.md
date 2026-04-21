@@ -16,6 +16,8 @@ Welcome! This documentation helps you manage TLS certificates in Juju deployment
 
 The `tls-certificates` library helps charm authors automate certificate requests, renewal, and revocation in Juju. This documentation explains how to implement the **requirer side** of the `tls-certificates` interface in your charm, enabling your application to request and manage X.509 certificates from TLS provider charms.
 
+**Not sure if you need this library?** Start with [Do I need to implement the TLS library?](developer/explanation/do-i-need-tls.md)
+
 👉 [Go to Developer docs](developer/tutorials/index.md)
 
 ```{toctree}
@@ -24,10 +26,8 @@ The `tls-certificates` library helps charm authors automate certificate requests
 :hidden:
 
 developer/tutorials/index
-developer/how-to-guides/index
 developer/reference/index
 developer/explanation/index
-developer/tls-certificates-interface
 ```
 
 ---
@@ -83,11 +83,8 @@ flowchart TD
 :hidden:
 
 operator/tutorials/index
-operator/how-to-guides/index
 operator/reference/index
 operator/explanation/index
-operator/understanding-tls
-operator/deployment-blueprints/index
 ```
 
 ---

@@ -16,6 +16,8 @@ In this tutorial, we will take a working Nginx charm and add the TLS Certificate
 
 ## 1. Pack and deploy the nginx demo charm
 
+In this section, we will deploy a demo Nginx charm and access its HTTP address via our browser.
+
 Clone the TLS Certificates Interface Demo project:
 
 ```bash
@@ -47,24 +49,31 @@ Wait for the charm to go to the Active/Idle status:
 juju status
 ```
 
+```
+user@ubuntu:~/code/tls-certificates-interface-demo$ juju status
+Model  Controller          Cloud/Region        Version  SLA          Timestamp
+demo   microk8s-localhost  microk8s/localhost  3.5.3    unsupported  15:12:25-04:00
+
+App         Version  Status  Scale  Charm                            Channel  Rev  Address         Exposed  Message
+nginx-http           active      1  tls-certificates-interface-demo             0  10.152.183.199  no
+
+Unit           Workload  Agent  Address      Ports  Message
+nginx-http/0*  active    idle   10.1.19.158
+```
+
 Using your browser, navigate to the application address on port 8080 using the HTTP scheme (e.g. `http://10.152.183.199:8080`).
 
 You should see the Nginx welcome page. You now have a working Nginx charm.
+![Nginx welcome page](../../images/nginx-welcome.png)
 
 ## 2. Import and use the TLS Certificates Library
 
 This section outlines the changes to make to the Nginx charm to support the TLS certificates integration. You can use [this pull request](https://github.com/canonical/tls-certificates-interface-demo/pull/5) as reference.
 
-Add `charmlibs-interfaces-tls-certificates` to your Python dependencies. Then in your Python code, import as:
+Add `charmlibs-interfaces-tls-certificates` to your Python dependencies (e.g. in requirements.txt or pyproject.toml). Then in your Python code, import as:
 
 ```python
-from charmlibs.interfaces import tls_certificates
-```
-
-Import the following classes from the TLS Certificates Interface Library:
-
-```python
-from charms.tls_certificates_interface.v4.tls_certificates import (
+from charmlibs.interfaces.tls_certificates import (
     Certificate,
     CertificateRequestAttributes,
     Mode,
@@ -139,7 +148,84 @@ Update the `_configure` event handler to manage TLS Certificates and restart the
         self._configure_pebble(restart=should_restart)
 ```
 
-You will need methods to handle pulling, pushing, and comparing certificates (see the original tutorial for full code examples).
+We will need the following methods to handle pulling, pushing and comparing certificates:
+
+```python
+class TlsCertificatesInterfaceDemoCharm(ops.CharmBase):
+
+    def _relation_created(self, relation_name: str) -> bool:
+        return bool(self.model.relations.get(relation_name))
+
+    def _certificate_is_available(self) -> bool:
+        cert, key = self.certificates.get_assigned_certificate(
+            certificate_request=self._get_certificate_request_attributes()
+        )
+        return bool(cert and key)
+
+    def _check_and_update_certificate(self) -> bool:
+        """Check if the certificate or private key needs an update and perform the update.
+
+        This method retrieves the currently assigned certificate and private key associated with
+        the charm's TLS relation. It checks whether the certificate or private key has changed
+        or needs to be updated. If an update is necessary, the new certificate or private key is
+        stored.
+
+        Returns:
+            bool: True if either the certificate or the private key was updated, False otherwise.
+        """
+        provider_certificate, private_key = self.certificates.get_assigned_certificate(
+            certificate_request=self._get_certificate_request_attributes()
+        )
+        if not provider_certificate or not private_key:
+            logger.debug("Certificate or private key is not available")
+            return False
+        if certificate_update_required := self._is_certificate_update_required(
+            provider_certificate.certificate
+        ):
+            self._store_certificate(certificate=provider_certificate.certificate)
+        if private_key_update_required := self._is_private_key_update_required(private_key):
+            self._store_private_key(private_key=private_key)
+        return certificate_update_required or private_key_update_required
+
+    def _is_certificate_update_required(self, certificate: Certificate) -> bool:
+        return self._get_existing_certificate() != certificate
+
+    def _is_private_key_update_required(self, private_key: PrivateKey) -> bool:
+        return self._get_existing_private_key() != private_key
+
+    def _get_existing_certificate(self) -> Optional[Certificate]:
+        return self._get_stored_certificate() if self._certificate_is_stored() else None
+
+    def _get_existing_private_key(self) -> Optional[PrivateKey]:
+        return self._get_stored_private_key() if self._private_key_is_stored() else None
+
+    def _certificate_is_stored(self) -> bool:
+        return self.container.exists(path=f"{CERTS_DIR_PATH}/{CERTIFICATE_NAME}")
+
+    def _private_key_is_stored(self) -> bool:
+        return self.container.exists(path=f"{CERTS_DIR_PATH}/{PRIVATE_KEY_NAME}")
+
+    def _get_stored_certificate(self) -> Certificate:
+        cert_string = str(self.container.pull(path=f"{CERTS_DIR_PATH}/{CERTIFICATE_NAME}").read())
+        return Certificate.from_string(cert_string)
+
+    def _get_stored_private_key(self) -> PrivateKey:
+        key_string = str(self.container.pull(path=f"{CERTS_DIR_PATH}/{PRIVATE_KEY_NAME}").read())
+        return PrivateKey.from_string(key_string)
+
+    def _store_certificate(self, certificate: Certificate) -> None:
+        """Store certificate in workload."""
+        self.container.push(path=f"{CERTS_DIR_PATH}/{CERTIFICATE_NAME}", source=str(certificate))
+        logger.info("Pushed certificate pushed to workload")
+
+    def _store_private_key(self, private_key: PrivateKey) -> None:
+        """Store private key in workload."""
+        self.container.push(
+            path=f"{CERTS_DIR_PATH}/{PRIVATE_KEY_NAME}",
+            source=str(private_key),
+        )
+        logger.info("Pushed private key to workload")
+```
 
 ## 3. Handle attribute changes
 
@@ -175,6 +261,20 @@ Wait for the charm to go to the Blocked/idle status:
 juju status
 ```
 
+```
+user@ubuntu:~/code/tls-certificates-interface-demo$ juju status
+Model  Controller          Cloud/Region        Version  SLA          Timestamp
+demo   microk8s-localhost  microk8s/localhost  3.5.3    unsupported  15:15:22-04:00
+
+App          Version  Status   Scale  Charm                            Channel  Rev  Address         Exposed  Message
+nginx-http            active       1  tls-certificates-interface-demo             0  10.152.183.199  no
+nginx-https           blocked      1  tls-certificates-interface-demo             1  10.152.183.188  no       certificates integration not created
+
+Unit            Workload  Agent  Address      Ports  Message
+nginx-http/0*   active    idle   10.1.19.158
+nginx-https/0*  blocked   idle   10.1.19.145         certificates integration not created
+```
+
 Deploy [Self Signed Certificates](https://charmhub.io/self-signed-certificates) (a TLS Certificates provider), and integrate it with the nginx charm:
 
 ```bash
@@ -188,8 +288,34 @@ Wait for the `nginx-https` charm to go to the Active/Idle status:
 juju status
 ```
 
+```
+user@ubuntu:~/code/tls-certificates-interface-demo$ juju status
+Model  Controller          Cloud/Region        Version  SLA          Timestamp
+demo   microk8s-localhost  microk8s/localhost  3.5.3    unsupported  15:17:13-04:00
+
+App                       Version  Status   Scale  Charm                            Channel        Rev  Address         Exposed  Message
+nginx-http                         active       1  tls-certificates-interface-demo                   0  10.152.183.199  no
+nginx-https                        waiting      1  tls-certificates-interface-demo                   1  10.152.183.188  no       installing agent
+self-signed-certificates           active       1  self-signed-certificates         latest/stable  155  10.152.183.242  no
+
+Unit                         Workload  Agent  Address      Ports  Message
+nginx-http/0*                active    idle   10.1.19.158
+nginx-https/0*               active    idle   10.1.19.145
+self-signed-certificates/0*  active    idle   10.1.19.146
+```
+
 Using your browser, navigate to the application address on port 8080 using the HTTPS scheme (e.g. `https://10.152.183.188:8080`).
 
-You should see a warning about the certificate not being valid (expected for self-signed). Proceed and you should see the Nginx welcome page. You can inspect the certificate and notice that you received a certificate for `example.com`.
+You should see a warning about the certificate not being valid (expected for self-signed). Proceed and you should see the Nginx welcome page.
+
+![Warning Page](../../images/ca-not-trusted.png)
+
+Click on Advanced → Proceed and you should now see the same Nginx page as in step 1.
+
+![Nginx welcome https](../../images/nginx-welcome-https.png)
+
+You can inspect the certificate and notice that you received a certificate for `example.com`.
+
+![Cert inspection](../../images/cert-inspect.png)
 
 Congratulations, you added the TLS integration to your charm!

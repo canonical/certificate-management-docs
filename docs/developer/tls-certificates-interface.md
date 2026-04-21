@@ -1,14 +1,34 @@
 (tls-certificates-interface)=
 
-# Implementing the `tls-certificates` integration
+# The `tls-certificates` library
 
-```{note}
-The `tls-certificates` library has moved from Charmhub to [charmlibs](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates). All new development and documentation updates happen there.
+The `tls-certificates` library helps charm authors automate certificate requests, renewal, and revocation in Juju. It is used by charms that provide or require X.509 certificates, and supports both requirer and provider roles.
+
+If your application charm needs to terminate TLS at the application level (see [Understanding TLS](../operator/understanding-tls.md)), you must implement the **requirer** side of the `tls-certificates` interface in your charm and integrate with a TLS provider charm.
+
+## How the interface works
+
+The whole idea behind the TLS Certificates interface is that charms can request TLS certificates from TLS providers without ever sharing their private key.
+
+The TLS Certificates Requirer (through the use of the TLS Certificates Library) generates its private key and a Certificate Signing Request (CSR). This CSR is inserted into its unit (or application) relation data.
+
+The TLS Certificates Provider reads this CSR, signs a certificate for it and inserts this certificate into its application relation data.
+
+The TLS Certificates Requirer then reads the certificate, and typically stores it in a file on the workload.
+
+```{mermaid}
+flowchart LR
+    subgraph App["Your App"]
+        subgraph Unit0["unit-0"]
+            PKEY["pkey"]
+        end
+    end
+    Provider["TLS Certificates Provider"]
+
+    App -- "tls-certificates" --> Provider
+    App -.->|"CSR"| Provider
+    Provider -.->|"CA Cert,<br/>CA Chain,<br/>Cert"| App
 ```
-
-The `tls-certificates` charm integration interface is used by charms that provide or require X.509 certificates. It automates certificate creation, renewal, and revocation within the Juju ecosystem.
-
-If your application charm needs to terminate TLS at the application level (see [](understanding-tls)), you must implement the **requirer** side of the `tls-certificates` interface in your charm. You then integrate your charm with a TLS provider operator of your choice.
 
 ## Key concepts
 
@@ -19,10 +39,11 @@ If your application charm needs to terminate TLS at the application level (see [
 
 ### Certificate modes
 
-The interface supports two modes for certificate issuance:
+The interface supports three modes for certificate issuance:
 
 - **APP mode**: A single certificate is issued for the application as a whole. This is typically used for ingress controllers or services with a single endpoint.
 - **UNIT mode**: Each unit of the application receives its own unique certificate. This is used for securing communication between individual units (e.g., database cluster replication).
+- **APP_AND_UNIT mode**: Combines both APP and UNIT modes - one certificate for the application and individual certificates for each unit. This is useful when you need both application-level and unit-level certificates simultaneously.
 
 ## Getting started
 
@@ -30,10 +51,16 @@ The `tls-certificates` library handles most of the heavy lifting for both requir
 
 ### Installation
 
-The library is available from the [charmlibs repository](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates):
+Add `charmlibs-interfaces-tls-certificates` to your Python dependencies (e.g. in requirements.txt or pyproject.toml). Then in your Python code, import as:
 
-```bash
-charmcraft fetch-lib charms.tls_certificates_interface.v4.tls_certificates
+```python
+from charmlibs.interfaces.tls_certificates import (
+  Certificate,
+  CertificateRequestAttributes,
+  Mode,
+  PrivateKey,
+  TLSCertificatesRequiresV4,
+)
 ```
 
 ### Implementing a requirer
@@ -60,5 +87,4 @@ Provider charms are responsible for:
 
 ## Further resources
 
-- [Library source code](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates)
-- [TLS Certificates Interface on Charmhub](https://charmhub.io/tls-certificates-interface) (legacy documentation)
+For more details, see the [library source code](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates).

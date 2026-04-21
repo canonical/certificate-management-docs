@@ -20,9 +20,9 @@ In deployments where X.509 certificates are needed to ensure HTTPS communication
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart LR
-    C["👤 Client"] -->|"HTTPS"| T["Traefik\n(Ingress)"]
+    C["👤 Client"] -->|"HTTPS"| T["Traefik<br/>(Ingress)"]
     T -->|"HTTP"| A["Application"]
-    P["TLS Provider"] -.->|"certificates\nintegration"| T
+    P["TLS Provider"] -.->|"certificates<br/>integration"| T
 
     classDef client fill:#f5f5f5,stroke:#333,stroke-width:2px,color:#333
     classDef ingress fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
@@ -50,10 +50,10 @@ A typical example is enabling various units of a PostgreSQL cluster to communica
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
 flowchart LR
-    C["👤 Client"] -->|"HTTPS"| T["Traefik\n(Ingress)"]
+    C["👤 Client"] -->|"HTTPS"| T["Traefik<br/>(Ingress)"]
     T -->|"HTTPS"| A["Application"]
-    P["TLS Provider"] -.->|"certificates\nintegration"| T
-    P -.->|"certificates\nintegration"| A
+    P["TLS Provider"] -.->|"certificates<br/>integration"| T
+    P -.->|"certificates<br/>integration"| A
 
     classDef client fill:#f5f5f5,stroke:#333,stroke-width:2px,color:#333
     classDef ingress fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
