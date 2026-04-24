@@ -1,0 +1,9 @@
+# TLS Certificates Interface Library Versions
+
+| Library Version                                                                                                                                   | Status     | TLS Certificates Interface version                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| v0                                                                                                                                                | Deprecated | [v1](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates/interface/v1) |
+| v1                                                                                                                                                | Deprecated | [v1](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates/interface/v1) |
+| v2                                                                                                                                                | Legacy     | [v1](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates/interface/v1) |
+| v3                                                                                                                                                | Legacy     | [v1](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates/interface/v1) |
+| [v4](https://github.com/canonical/charmlibs/blob/main/interfaces/tls-certificates/src/charmlibs/interfaces/tls_certificates/_tls_certificates.py) | Stable     | [v1](https://github.com/canonical/charmlibs/tree/main/interfaces/tls-certificates/interface/v1) |
