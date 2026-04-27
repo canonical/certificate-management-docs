@@ -26,6 +26,7 @@ The `tls-certificates` library helps charm authors automate certificate requests
 :hidden:
 
 developer/tutorials/index
+developer/how-to-guides/index
 developer/reference/index
 developer/explanation/index
 ```
