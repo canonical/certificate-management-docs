@@ -85,6 +85,43 @@ flowchart TD
     class ClientApp client
 ```
 
+### Cross-model CA distribution
+
+In multi-model deployments, a CA that issues certificates in one model is not automatically trusted in another. Trust must be established explicitly by sharing the CA certificate across model boundaries.
+
+This is done via the `certificate-transfer` interface over a cross-model relation. The model that owns the CA **offers** it; the consuming model **consumes** it and imports the CA certificate into the trusting application's store.
+
+```{mermaid}
+%%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
+flowchart LR
+    subgraph ModelA["Model A (CA owner)"]
+        TLS["TLS Provider\n(CA)"]
+        ServerApp["Server App"]
+    end
+
+    subgraph ModelB["Model B (CA consumer)"]
+        ClientApp["Client App"]
+    end
+
+    TLS -.->|"tls-certificates"| ServerApp
+    TLS -.->|"certificate-transfer\n(offers CA cert)"| ClientApp
+    ClientApp -->|"HTTPS\n(validates against trusted CA)"| ServerApp
+
+    classDef provider fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#333
+    classDef server fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#333
+    classDef client fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
+    classDef model fill:#fafafa,stroke:#666,stroke-width:1px,color:#333
+
+    class TLS provider
+    class ServerApp server
+    class ClientApp client
+    class ModelA,ModelB model
+```
+
+Each `certificate-transfer` represents an explicit trust decision: Model B is choosing to trust certificates issued by Model A's CA. In a per-model CA topology, these decisions should be made deliberately and kept to the minimum required for the application to function.
+
+See {ref}`multi-model TLS reference architectures <multi-model-tls>` for complete architectures showing how to structure cross-model TLS in production deployments.
+
 ### Summary
 
 | Scenario                | Trust source                                  | Interface               |
@@ -92,3 +129,4 @@ flowchart TD
 | Internal (unit-to-unit) | CA cert from `tls-certificates` relation data | `tls-certificates`      |
 | API (client-to-server)  | CA cert directly from the provider            | `certificates-transfer` |
 | Intermediate CA         | Root CA (recommended)                         | `certificates-transfer` |
+| Cross-model             | CA cert via `certificate-transfer`            | `certificate-transfer`  |

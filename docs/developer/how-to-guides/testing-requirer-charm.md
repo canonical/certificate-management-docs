@@ -141,7 +141,7 @@ def test_given_charms_are_integrated_then_certificate_is_received(juju):
 
 ## Test: Certificate is re-requested when config changes
 
-When a CSR attribute changes — for example `sans_dns` — the charm must send a
+When a CSR attribute changes, for example `sans_dns`, the charm must send a
 new CSR and receive a new certificate that reflects the updated value.
 
 ```python
