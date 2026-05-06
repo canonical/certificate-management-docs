@@ -78,11 +78,12 @@ rediraffe
 retrigger(ing)?
 Diátaxis
 ACME
-CA
+CA(s)?
 Charmhub
 charmcraft
 charmlibs
 CSR(s)?
+hostname(s)?
 HSM
 intra
 Juju

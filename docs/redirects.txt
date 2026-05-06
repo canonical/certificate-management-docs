@@ -51,3 +51,8 @@
 ./tutorial/ ./
 ./tutorial/set-up-automated-testing/ ./
 ./tutorial/set-up/ ./
+
+# Pages moved from deployment-blueprints to explanation
+./operator/deployment-blueprints/ca-trust-best-practices/ ./operator/explanation/ca-trust-best-practices/
+./operator/deployment-blueprints/securing-api-communication/ ./operator/explanation/securing-api-communication/
+./operator/deployment-blueprints/securing-internal-communication/ ./operator/explanation/securing-internal-communication/

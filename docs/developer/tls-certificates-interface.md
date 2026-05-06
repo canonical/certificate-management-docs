@@ -43,7 +43,7 @@ The interface supports three modes for certificate issuance:
 
 - **APP mode**: A single certificate is issued for the application as a whole. This is typically used for ingress controllers or services with a single endpoint.
 - **UNIT mode**: Each unit of the application receives its own unique certificate. This is used for securing communication between individual units (e.g., database cluster replication).
-- **APP_AND_UNIT mode**: Combines both APP and UNIT modes - one certificate for the application and individual certificates for each unit. This is useful when you need both application-level and unit-level certificates simultaneously.
+- **APP_AND_UNIT mode**: Combines both APP and UNIT modes, one certificate for the application and individual certificates for each unit. This is useful when you need both application-level and unit-level certificates simultaneously.
 
 ## Getting started
 

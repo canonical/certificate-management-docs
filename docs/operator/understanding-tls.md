@@ -151,3 +151,18 @@ For a more streamlined experience, consider [Notary](https://canonical-notary.re
 Vault is well-suited for production deployments that require a full-featured PKI solution with secret management capabilities. See the [Vault charm documentation](https://canonical-vault-charms.readthedocs-hosted.com/en/latest/) for details.
 
 This charm implements the `tls-certificates` interface using the [tls_certificates library](https://documentation.ubuntu.com/charmlibs/reference/charmlibs/interfaces/tls-certificates), which provides automatic certificate renewal before expiry and structured error reporting with standardized codes when certificate requests fail.
+
+## Why API and internal certificates often require separate CAs
+
+For API-facing (external) traffic, teams often use a publicly trusted CA through `lego` (e.g., Let's Encrypt). However, **publicly trusted CAs cannot issue certificates that contain IP addresses as Subject Alternative Names (SANs)**, and they will not issue certificates for private or internal hostnames (e.g., `10.0.0.5` or `postgresql.cluster.local`).
+
+This is a hard constraint from the CA/Browser Forum baseline requirements—not a configuration option.
+
+Internal unit-to-unit communication frequently requires certificates with IP SANs or private hostnames (for example, a PostgreSQL unit certificate must include the unit's IP address so that peer connections can be validated). Because a public CA cannot satisfy these requirements, **a private CA is always required for internal certificates**, even if a public CA is used for external API traffic.
+
+The practical consequence for most production deployments is:
+
+- **API-facing (ingress) certificates**: issued by a public CA via `lego`, or by Vault/Notary when a private PKI with public trust is acceptable.
+- **Internal (unit-to-unit) certificates**: issued by `self-signed-certificates` or Vault, using a private CA that can include IP SANs and private hostnames.
+
+See {ref}`securing-api-communication` for an example of how to wire both providers in the same deployment.
