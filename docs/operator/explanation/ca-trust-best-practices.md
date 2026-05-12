@@ -66,7 +66,28 @@ flowchart TD
 For more complex deployments that {ref}`secure API communication <securing-api-communication>`, client applications should trust the CA **directly from the CA provider**, not from the application serving the certificate.
 
 - The CA certificate can be obtained by integrating with the provider over the `certificates-transfer` interface.
-- When the provider uses an intermediate CA, it is recommended to trust the **root CA** (or the highest CA in the hierarchy). However, this is not mandatory.
+- When the provider uses an intermediate CA, it is recommended to trust the **root CA** (or the highest CA in the hierarchy).
+
+```{mermaid}
+%%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
+flowchart TD
+    RootCA["Root CA"]
+    IntCA["Intermediate CA"]
+    RootCA -->|"signs"| IntCA
+    IntCA -.->|"certificates<br/>integration<br/>(issues leaf cert)"| Server["Server App"]
+    RootCA -.->|"certificates-transfer<br/>integration<br/>(provides Root CA cert)"| ClientApp["Client App"]
+    ClientApp -->|"HTTPS<br/>(validates chain:<br/>leaf → Intermediate → Root)"| Server
+
+    classDef root fill:#FFEBEE,stroke:#B71C1C,stroke-width:2px,color:#333
+    classDef intermediate fill:#FFF3E0,stroke:#E65100,stroke-width:2px,color:#333
+    classDef server fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#333
+    classDef client fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#333
+
+    class RootCA root
+    class IntCA intermediate
+    class Server server
+    class ClientApp client
+```
 
 ```{mermaid}
 %%{init: {'theme': 'default', 'themeVariables': {'fontSize': '12px'}, 'flowchart': {'nodeSpacing': 30, 'rankSpacing': 40, 'curve': 'linear', 'padding': 10}}}%%
