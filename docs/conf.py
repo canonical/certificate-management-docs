@@ -176,7 +176,7 @@ html_extra_path = []
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-slug = '/juju/docs/certificate-management'
+slug = 'juju/docs/certificate-management'
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
