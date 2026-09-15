@@ -70,7 +70,7 @@ copyright = "%s CC-BY-SA, %s" % (datetime.date.today().year, author)
 # NOTE: The Open Graph Protocol (OGP) enhances page display in a social graph
 #       and is used by social media platforms; see https://ogp.me/
 
-# ogp_site_url = "https://canonical-starter-pack.readthedocs-hosted.com/"
+ogp_site_url = "https://canonical.com/juju/docs/certificate-management/"
 
 
 # Preview name of the documentation website
@@ -176,7 +176,7 @@ html_extra_path = []
 # TODO: If your documentation is hosted on https://docs.ubuntu.com/,
 #       uncomment and update as needed.
 
-slug = 'certificate-management'
+slug = 'juju/docs/certificate-management'
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
@@ -186,16 +186,13 @@ slug = 'certificate-management'
 # TODO: When moving to docs.ubuntu.com, set to:
 #       html_baseurl = 'https://documentation.ubuntu.com/certificate-management/'
 
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
+html_baseurl = "https://canonical.com/juju/docs/certificate-management/"
 
-# URL scheme. Add version scheme element.
-# When configured with RTD variables, check for RTD environment so manual runs succeed:
+# URL scheme.
 
-if 'READTHEDOCS_VERSION' in os.environ:
-    version = os.environ["READTHEDOCS_VERSION"]
-    sitemap_url_scheme = '{version}{link}'
-else:
-    sitemap_url_scheme = 'MANUAL/{link}'
+sitemap_url_scheme = "{link}"
+
+sitemap_filename = "doc-sitemap.xml"
 
 # Include `lastmod` dates in the sitemap:
 
@@ -224,16 +221,11 @@ templates_path = [".sphinx/_templates"]
 # Redirects #
 #############
 
-# To set up redirects: https://documatt.gitlab.io/sphinx-reredirects/usage.html
-# For example: 'explanation/old-name.html': '../how-to/prettify.html',
+# Add redirects to the 'redirects.txt' file.
+# https://sphinxext-rediraffe.readthedocs.io/en/latest/
 
 # To set up redirects in the Read the Docs project dashboard:
 # https://docs.readthedocs.io/en/stable/guides/redirects.html
-
-# NOTE: If undefined, set to None, or empty,
-#       the sphinx_reredirects extension will be disabled.
-
-# redirects = {}  # Now using redirects.txt file instead
 
 
 ###########################
@@ -295,7 +287,7 @@ extensions = [
     "canonical_sphinx",
     "notfound.extension",
     "sphinx_design",
-    "sphinx_reredirects",
+    "sphinx_rerediraffe",
     "sphinx_tabs.tabs",
     "sphinxcontrib.jquery",
     "sphinxext.opengraph",
@@ -313,7 +305,6 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_last_updated_by_git",
     "sphinx_sitemap",
-    "sphinxext.rediraffe",
     "sphinx_new_tab_link",
 ]
 
@@ -321,6 +312,7 @@ extensions = [
 
 exclude_patterns = [
     "doc-cheat-sheet*",
+    ".venv*",
 ]
 
 # Adds custom CSS files, located under 'html_static_path'
@@ -328,6 +320,14 @@ exclude_patterns = [
 html_css_files = [
     "css/custom.css",
     "css/pdf.css",
+    "https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css",
+]
+
+# Adds custom JS files, located under 'html_static_path'
+
+html_js_files = [
+    "js/overwrite_links.js",
+    "https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
 ]
 
 # Feedback button at the top; enabled by default
@@ -401,4 +401,6 @@ mermaid_output_format = 'raw'
 new_tab_link_show_external_link_icon = True
 
 rediraffe_redirects = "redirects.txt"
+# Strips '/index.html' from destination URLs when building with 'dirhtml'
+rediraffe_dir_only = True
 
